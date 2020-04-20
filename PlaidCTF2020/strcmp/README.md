@@ -127,7 +127,7 @@ def find_flag(fat,start_flag=['P','C','T','F','{']):
             new_start_flag = start_flag + [opt[0]]
             print("".join(new_start_flag))
             if opt[0] != "}":
-                options_for_x(fat,start_flag=new_start_flag)
+                find_flag(fat,start_flag=new_start_flag)
 
 ```
 
