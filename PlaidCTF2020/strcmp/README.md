@@ -35,7 +35,10 @@ file at the end indicating if the strcmp is matched or not.
 Files were `SORRY TOOBAD NOFLAG4U NOMATCH NEGATORY LOLNOPE TROLLOL and finally MATCH`
 
 So reading about the FAT32 file structure
+
+
 ![fat_struct](fat_struct.png)
+
 
 ```
 Sector =  ((N – 2) * BPB_SecPerClus) + FirstDataSector;
