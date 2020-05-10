@@ -134,6 +134,6 @@ We could not get any further, however the other four bypasses were
 2. Bash environment variables `PS4` `BASH_ENV`
 3. The most difficult one to figure out was overriding `_command_not_found_handle`
 
-P.S There was a uninteded solution by Bushwhackers `grep -LFIsrvf/flag` which worked everytime
+P.S There was a uninteded solution by Bushwhackers `[["X", "Y", "-Irf/flag"]]` which worked everytime
 
 
