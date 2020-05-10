@@ -1,0 +1,57 @@
+[
+   [
+      "BASH_FUNC_set%%",
+      "() {  cat flag\n}",
+      "X"
+   ],
+   [
+      "BASH_FUNC_test%%",
+      "() {  cat flag\n}",
+      "X"
+   ],
+   [
+      "BASH_FUNC_grep%%",
+      "() {  cat flag\n}",
+      "X"
+   ],
+   [
+      "BASH_FUNC_echo%%",
+      "() {  cat flag\n}",
+      "X"
+   ],
+   [
+      "BASH_FUNC_eval%%",
+      "() {  cat flag\n}",
+      "X"
+   ],
+   [
+      "BASH_FUNC_exec%%",
+      "() {  cat flag\n}",
+      "X"
+   ],
+   [
+      "BASH_FUNC_bash%%",
+      "() {  cat flag\n}",
+      "X"
+   ],
+   [
+      "USE_SED",
+      "true",
+      "Habitat/p;1e cat flag;#"
+   ],
+   [
+      "BASH_FUNC_return%%",
+      "() {  cat flag\n}",
+      "X"
+   ],
+   [
+      "BASH_FUNC_hash%%",
+      "() {  function return() { cat flag; } \n}",
+      "X"
+   ],
+   [
+      "GREP_OPTIONS",
+      "-fflag -r --include=flag",
+      "-r"
+   ]
+]
