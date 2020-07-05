@@ -2,7 +2,7 @@
 
 Web + Crypto(not) challenge.
 
-We are given a flask app, with the '/flag' route giving flag but only to localhost visiters.
+We are given a flask app, with the `/flag` route giving flag but only to localhost visiters.
 Glancing over the code (bad decision) we find that there is some AES crypto happening when you do `/register` and `/login`.
 
 There is a `/ticket` route which has a lot of CSP rules in it but allow script-inline.
@@ -14,9 +14,10 @@ Now the attack plan became clear
 
 1. Break AES
 2. `markdown2.markdown == 2.3.8` has a known vulnerability, use it to bypass html injection.
+https://github.com/trentm/python-markdown2/issues/341
 3. fetch('/flag') and send it your server
 
-Pretty straightforward.
+Pretty straightforward. Or so I thought
 
 The AES key had a length of 32
 This was the encryption function
@@ -31,7 +32,8 @@ def encrypt(plaintext):
         ciphertext += iv
 ```
 
-We can easily break AES byte by byte by with different usernames.
+We can easily break AES byte by byte by with specially crafted usernames allowing us to control AES blocks.
+
 ```
 def getBlock(candidate):
     register(candidate)
@@ -59,7 +61,9 @@ def cracker():
 
 Took its time and gave out the key `ASIS2020_W3bcrypt_ChAlLeNg3!@#%^`
 
-Then using the python-markdown2 vulnerability along with scripts-inline csp allowed us to get XSS.
+Inline script tags were allowed on the `/ticket` route meaning our injected payload should work just fine.
+Then using the python-markdown2 vulnerability, we make the XSS payload and encrypt it to get our payload.
+
 http://76.74.170.201:8080/ticket?msg=1d1758c42e3d973ad815770ad433bdf588d93bc5a40a7c2227879ab1ccbcf5c0af642137d577226fff5dc9dcaec9027b4a731b7c7a87ce3539a5d0c9c41a15c47b10641cd4113e84692f657d877aa04f29ca8d8031f4bea7886b0a3b380da4d0eb9912dbc75f8bfc004b84e24079894387df5ec1f7c1ccc1fa6470491314d60b&key=ASIS2020_W3bcrypt_ChAlLeNg3!%40%23%25^
 
 This is when we came across the line that I just glanced over in the `/ticket` route
@@ -70,12 +74,12 @@ if res_key == key and request.remote_addr != '127.0.0.1':
 ```
 **remote_addr != '127.0.0.1' This page will not load locally. WTF !**
 
-At this point I started looking at Flask source code understanding how it gets the remote_addr value but no luck with any bypasses there.
-It would not be as simple as just setting `X-Forwarded-For` header.
+At this point I started looking at Flask source code understanding how it gets the remote_addr value, reverse proxies usually set `X-Forwarded-For` header to tell the server the real client ip. It didn't work obviously,it would not be as simple as just setting a header.
+
 
 So now back to analysing the code again.
 
-This host check was very suspicious
+This host check looked very suspicious
 
 ```
 host = urlparse(url).netloc
@@ -92,9 +96,9 @@ The `urlparse(url).netloc` will result in `76.74.170.201:@attacker.com` and then
 But opening it in a browser it will open attacker.com
 
 At this point we can run javascript on the server. 
-CORS prevented us from doing a simple `fetch('http://localhost:8080/flag)` we needed to be on the Same-Origin.
+CORS prevented us from doing a simple `fetch('http://localhost:8080/flag)` we needed to be on the same origin.
 
-This made me think of DNS-Rebinding attack. I'll open my domain on the headless browser, rebind it to `127.0.0.1` after it has opened and just fetch the flag.
+This made me think of DNS-Rebinding attack. I'll get it to open my domain on the headless browser, rebind the domain to `127.0.0.1` after it has opened and just fetch the flag.
 
 ```
 driver = webdriver.Chrome(chrome_options=options, executable_path='/usr/bin/chromedriver')
@@ -127,7 +131,9 @@ The whole DNS rebinding process took less than 8-10 seconds. Although it took me
 
 ASIS{Y0U_R3binded_DN5_f0r_SSRF}
 
+
 P.S @teranq from the team justCatTheFish got bored and found a bypass for the 2.3.8 markdown fix. https://github.com/trentm/python-markdown2/issues/362
+
 
 
 
